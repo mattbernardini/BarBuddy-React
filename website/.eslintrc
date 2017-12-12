@@ -16,7 +16,8 @@
       "quote-props": ["error", "consistent-as-needed"]
     },
     "env": {
-      "jest": true
+      "jest": true,
+      "node": true
     }
   }
   
