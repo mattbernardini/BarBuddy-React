@@ -2,33 +2,37 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import configureStore from './store'
-import { persistStore } from 'redux-persist'
 import registerServiceWorker from './registerServiceWorker'
-
+import { PersistGate } from 'redux-persist/es/integration/react'
 // Custom CSS imports
 import 'font-awesome/css/font-awesome.css'
 import './css/index.css'
 
 // Material UI theme wrapper
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import ThemeDefault from './ThemeDefault'
+import ThemeDefault from './themes'
 
 // Setup the store
-const store = configureStore()
-persistStore(store)
+const {persistor, store} = configureStore({form: {}})
 
 // Setup the main app
 let render = () => {
   // Dynamically import main component, render it
   const BarBuddy = require('./pages').default
-
+  require('dotenv').config()
   ReactDOM.render(
     <Provider store={store}>
-      <MuiThemeProvider muiTheme={ThemeDefault}>
-        <BarBuddy />
-      </MuiThemeProvider>
+      <PersistGate
+        loading='loading'
+        persistor={persistor}
+      >
+        <MuiThemeProvider muiTheme={ThemeDefault}>
+          <BarBuddy />
+        </MuiThemeProvider>
+      </PersistGate>
     </Provider>,
-    document.getElementById('app'))
+    document.getElementById('app')
+  )
 }
 
 registerServiceWorker()

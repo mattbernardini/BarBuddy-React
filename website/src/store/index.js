@@ -2,7 +2,6 @@ import { compose, createStore, applyMiddleware } from 'redux'
 import { persistStore } from 'redux-persist'
 import thunk from 'redux-thunk'
 import rootReducer from '../reducers'
-
 export default (initialState = {}) => {
   // ======================================================
   // Store Enhancers
@@ -16,20 +15,16 @@ export default (initialState = {}) => {
   }
 
   // Create store with reducers and initial state
-  const store = createStore(
+  const store1 = (rootReducer, initialState) => createStore(
     rootReducer,
-    initialState,
+    {form: {}, accessToken: {}},
     compose(
       applyMiddleware(thunk),
       ...enhancers
     )
   )
+  const store = store1(rootReducer, {form: {}})
+  const persistor = persistStore(store)
 
-  persistStore(
-    store,
-    null,
-    () => store.getState()
-  )
-
-  return store
+  return {persistor, store}
 }
