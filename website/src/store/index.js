@@ -1,12 +1,9 @@
 import { compose, createStore, applyMiddleware } from 'redux'
-import { autoRehydrate, persistStore } from 'redux-persist'
+import { persistStore } from 'redux-persist'
 import thunk from 'redux-thunk'
 import rootReducer from '../reducers'
 
-
 export default (initialState = {}) => {
-  // Initialize Firebase instance
-
   // ======================================================
   // Store Enhancers
   // ======================================================
@@ -24,17 +21,15 @@ export default (initialState = {}) => {
     initialState,
     compose(
       applyMiddleware(thunk),
-      autoRehydrate(),
       ...enhancers
     )
   )
 
-  // Listen for auth ready (promise available on store thanks to attachAuthIsReady: true config option)
-  store.then(() => {
-    console.log('Auth has loaded') // eslint-disable-line no-console
-  })
-
-  persistStore(store)
+  persistStore(
+    store,
+    null,
+    () => store.getState()
+  )
 
   return store
 }
